@@ -37,7 +37,6 @@ end
 basic_properties = cell(1,length(all_cells));
 
 for i = 1:max(length(all_cells))
-    %if all_cells{i}.name == Inputparameter{i}.expName
         % Notch filter settings
         Order = 3;
         Wn1 = [40/(Inputparameter{i}.Fs/2) 60/(Inputparameter{i}.Fs/2)];
@@ -86,9 +85,6 @@ for i = 1:max(length(all_cells))
             legend('Test1','Fit1','Location','SouthEast');
             title(['Testpulse for ' Inputparameter{i}.expName]);
         end
-    %else
-    %    disp('Experiment name mismatch');
-    %end
 end
 
 
