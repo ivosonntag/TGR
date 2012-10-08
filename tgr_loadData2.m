@@ -23,9 +23,15 @@ function all_cells = tgr_loadData2(filepath,expName)
 %%% The output is a {1 by number of input rows} cell array for each cell-recording/row. This cell contains a 
 %%% structure with 5 fields. 
 %%% {1,1}.name is equal to the specified Experiment Name
-%%% {1,1}.rawdata is a (m,n) array with length of m corresponding to the number of data samples (1 second of 20KiloHz 
+%%% {1,1}.rawdata is an (m,n) array with length of m corresponding to the number of data samples (1 second of 20KiloHz 
 %%%     sampling frequency will return an m of length 20000), and n with a length of the Input cell-recordings/rows.
-%%% {1,1}.rawdata
+%%% {1,1}.dS has the same dimensions as {1,1}.rawdata, but reflects the scaled Output that has been corrected 
+%%%     for it's offset -> this is the actual Data in mV. Note, that m does not reflect miliseconds but is scaled to
+%%%     the sampling frequency (if 20KiloHz one bin is equal to 50 milliseconds)
+%%% {1,1}.timebases is an (m,n) array that has the same size as rawdata/dS. Each value corresponds to the millisecond in 
+%%% which the same value was sampled in rawdata/dS. It can be used to provide a y-scale when plotting the data.
+%%% {1,1}.cfs_info is a structure containing the cfs files basic information. It's created by MATCFS32 (add (c)), 
+%%% refer to the MATCFS32 documentation for further information.  
 %%% 
 %%%
 
