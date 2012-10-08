@@ -1,5 +1,7 @@
 function basic_properties = tgr_basic_properties(all_cells,Inputparameter,show_single_epis,show_average_section)
 
+$$$ this is an old version of the basic_properties function and should be replaced with basic_props.m
+
 if nargin<1
     [fname pname] = uigetfile('','Select preloaded Cell data.');
     all_cells = load([pname fname]);
