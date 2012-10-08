@@ -1,6 +1,9 @@
 function Inputparameter = tgr_infof2struct(info_fpath,info_fname)
-%%% this function converts the info files for cfs data analysis into a
-%%% structure variable
+%%% This function converts the info files for cfs data analysis into a
+%%% structure variable that is equal the 'Inputparameter' variable requested by the tgr_XXX functions
+%%% for data-analysis.
+%%% Inputs: 
+
 
 if nargin<1
     fpaths = uipickfiles;
