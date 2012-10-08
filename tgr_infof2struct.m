@@ -3,6 +3,11 @@ function Inputparameter = tgr_infof2struct(info_fpath,info_fname)
 %%% structure variable that is equal the 'Inputparameter' variable requested by the tgr_XXX functions
 %%% for data-analysis.
 %%% Inputs: 
+%%% info_fpath -> the path including the filename 
+%%% on windows filepath = 'X:\path\filename.m' 
+%%% on unix filepath = '/home/path/filename.m'
+%%% This variable has to be a cell array of strings, so that multiple files can be read in.
+%%% info_fname -> this variable was supposed to connect the Infoparameters with the data and will be removed
 
 
 if nargin<1
