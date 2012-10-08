@@ -1,5 +1,19 @@
 function basic_properties = tgr_basic_props(all_cells,Inputparameter,show_single_epis,show_average_section)
 
+%%% This function calculates the basic properties RMP (resting membrane
+%%% potential), Rm (membrane resistance), Cm (membrane capacitance) and the
+%%% timeconstant, using the dataformat of tgr_loadData2 and the
+%%% Inputparameters loaded with tgr_infof2struct.
+%%% 
+%%% Inputs:
+%%% all_cells -> list of recorded-cells, load using tgr_loadData2
+%%% Inputparameter -> list of experiment parameters for each recorded-cell
+%%%     the order and dimensions have to match the all_cells array.
+%%% show_single_epis -> 'yes' or 'no', specifies wether to show each trace
+%%%     or not. Default is 'no'.
+%%% show_average_section -> 'yes' or 'no', specifies wether to show the 
+%%%     averaged traces or not. Default is 'yes'.
+
 if nargin<1
     [fname pname] = uigetfile('','Select preloaded Cell data.');
     all_cells = load([pname fname]);
@@ -49,17 +63,12 @@ for i = 1:max(length(all_cells))
     % % Analyse Test pulse states for RMP and Rm
     clear dS timebases Peakbin xdata ydata yFit PeakVm NormdS NormVm TestVm
     for trial = 1:length(Inputparameter{i}.state{1})
-%         fprintf('cell %d trial %d/%d',i,trial,length(Inputparameter{i}.state{1}));
-%         data = filtfilt(b1,a1,all_cells{i}.rawdata(:,trial));
-        dS(:,trial) = all_cells{i}.dS(:,Inputparameter{i}.state{1}(trial)); % all_cells{i}.cfs_info.yScales(1) * data + all_cells{i}.cfs_info.yOffsets(1);
+        dS(:,trial) = all_cells{i}.dS(:,Inputparameter{i}.state{1}(trial));
         timebases = all_cells{i}.timebases;
         if strcmp(show_single_epis,'yes')
             h = figure(3);
-            plot(timebases,dS(:,trial)); 
-            %    plot(timebases(:,trial),rawdata); hold on
-            %    plot(timebases(:,trial),data,'r'); hold off
+            plot(timebases,dS(:,trial));
             title(['Testpulse episode ' int2str(trial) ' not filtered']);
-            %pause(0.1)
         end
     end
     TestVm = mean(dS,2);
@@ -71,7 +80,6 @@ for i = 1:max(length(all_cells))
     Peakbin = find(NormVm(Inputparameter{i}.Teststart:Inputparameter{i}.Testend) == PeakVm,1) + Inputparameter{i}.Teststart-1;
     xdata = timebases(Inputparameter{i}.Teststart:Peakbin);
     ydata = NormVm(Inputparameter{i}.Teststart:Peakbin)';
-%     fprintf('cell %d start fitting',i);
     kinit=[1,0.02,PeakVm-Inputparameter{i}.InitOffset, 0.7,0.01];
     [k]=nlinfit(xdata,ydata,myfun,kinit,options);
     yFit=myfun(k,xdata);
