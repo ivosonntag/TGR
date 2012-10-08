@@ -5,9 +5,30 @@ function all_cells = tgr_loadData2(filepath,expName)
 %%% has been rewritten by Ivo Sonntag. It depends on the ....
 %%% 
 %%% Inputs:
+%%% filepath -> the path including the filename 
+%%% on windows filepath = 'X:\path\filename.cfs' 
+%%% on unix filepath = '/home/path/filename.cfs'
+%%% This variable has to be a cell array of strings, so that multiple files can be read in.
+%%% The function assumes rows of the cell array to contain recordings from different cells, so that each colum of 
+%%% a row will be treated as part of one cell and the data will be concatanated. The data inputed will be 
+%%% transposed, so that the longest dimension is assumed to be the rows.
 %%%
-%%% Outputs:
+%%% expName -> just a simple string, so the files can later be identified easier
 %%%
+%%% If no experiment Name is specified, the exName variable will be set to 'random'.
+%%% If no directory is specified, a gui is provided (uigetfiles.m Copyright (c) 2007, Douglas M. Schwarz), 
+%%% so that a list of files can be picked. This does not support concatanation of recordings.
+%%%
+%%% Outputs: 
+%%% The output is a {1 by number of input rows} cell array for each cell-recording/row. This cell contains a 
+%%% structure with 5 fields. 
+%%% {1,1}.name is equal to the specified Experiment Name
+%%% {1,1}.rawdata is a (m,n) array with length of m corresponding to the number of data samples (1 second of 20KiloHz 
+%%%     sampling frequency will return an m of length 20000), and n with a length of the Input cell-recordings/rows.
+%%% {1,1}.rawdata
+%%% 
+%%%
+
 if (nargin<1 || isempty(filepath)) 
     tgr_filelist = uipickfiles';
 else 
