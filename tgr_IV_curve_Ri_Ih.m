@@ -107,7 +107,7 @@ for i = 1:max(length(all_cells))
             xlabel('Step current (pA)');
             title(['I-V curve of cell ' Inputparameter{i}.expName]);
         end
-        IV_curve_Ri_Ih{i}.Ih = nanmean(Ihsag(1:8));
+        IV_curve_Ri_Ih{i}.Ih = nanmean(Ihsag(1:7));
         IV_curve_Ri_Ih{i}.Ri = IVslope * 1000;
         IV_curve_Ri_Ih{i}.PeakVm = PeakVm;
         IV_curve_Ri_Ih{i}.Vpeak = Vpeak;
