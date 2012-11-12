@@ -102,12 +102,12 @@ for i = 1:max(length(all_cells))
             set(f,'color','w');
             plot(Inputparameter{i}.IVsteps,Vpeak, 'k.'); hold on
             plot(Inputparameter{i}.IVsteps(Inputparameter{i}.Ri_steps),IVfit, 'r'); hold off
-            set(gca,'xLim',[-200 100],'ylim',[-60 40]);
+            %set(gca,'xLim',[-200 100],'ylim',[-60 40]);
             ylabel('Peak potential (mV)');
             xlabel('Step current (pA)');
             title(['I-V curve of cell ' Inputparameter{i}.expName]);
         end
-        IV_curve_Ri_Ih{i}.Ih = nanmean(Ihsag(1:8));
+        IV_curve_Ri_Ih{i}.Ih = nanmean(Ihsag(1:5));
         IV_curve_Ri_Ih{i}.Ri = IVslope * 1000;
         IV_curve_Ri_Ih{i}.PeakVm = PeakVm;
         IV_curve_Ri_Ih{i}.Vpeak = Vpeak;

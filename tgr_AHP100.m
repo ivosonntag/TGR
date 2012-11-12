@@ -78,7 +78,7 @@ for i = 1:size(all_cells,2)
         gS = filter(g(:,1),1,mean(dS,2)); % average episodes for each Istep and filter
         gS=[gS(extrabins:end); gS(end)*ones(extrabins-1,1)];
         mS(:,j) = gS;
-        BaseVm = mean(mS([Inputparameter{i}.Baseline(1):Inputparameter{i}.Baseline(2)+1000],j));
+        BaseVm = mean(mS([Inputparameter{i}.Baseline(1):Inputparameter{i}.Baseline(2)],j));
         PeakVm(j) = min(mS(Inputparameter{i}.Teststart+1000:Inputparameter{i}.Testend+4000,j));
         AHP100bin(j) = find(mS(Inputparameter{i}.Teststart+1000:Inputparameter{i}.Testend+4000,j) == PeakVm(j),1) + Inputparameter{i}.Teststart+1000-1;
         sAHP100(j) = PeakVm(j)-BaseVm;

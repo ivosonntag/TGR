@@ -73,7 +73,7 @@ for i = 1:max(length(all_cells))
     end
     TestVm = mean(dS,2);
     basic_properties{i}.RMP = mean(TestVm(Inputparameter{i}.Baseline(1):Inputparameter{i}.Baseline(2)));
-    NormdS = dS - mean(TestVm(Inputparameter{i}.Baseline(2):7000)); % basic_properties{i}.RMP;
+    NormdS = dS - mean(TestVm(Inputparameter{i}.Baseline(1):Inputparameter{i}.Baseline(2))); % basic_properties{i}.RMP;
     NormVm = mean(NormdS,2);
     PeakVm = min(NormVm(Inputparameter{i}.Teststart:Inputparameter{i}.Testend));
     basic_properties{i}.Rm = PeakVm / Inputparameter{i}.TestI*1000;
@@ -90,15 +90,16 @@ for i = 1:max(length(all_cells))
         set(f,'color','w');
         plot(timebases,NormVm,'b'); hold on
         plot(xdata,yFit,'g'); hold on
-        set(gca,'XLim',[0.32 0.52]);
+        %set(gca,'XLim',[0.32 0.52]);
         xlabel('Time (sec)')
         ylabel('Potential (mV)')
         legend('Test1','Fit1','Location','NorthEast');
         title(['Testpulse for cell ' Inputparameter{i}.expName]);
     end
     hold off
-    basic_properties{i}.peakVm = PeakVm
-    basic_properties{i}.trial = Inputparameter{i}.state{1}
+    basic_properties{i}.peakVm = PeakVm;
+    basic_properties{i}.trial = Inputparameter{i}.state{1};
+    basic_properties{i}.Peakbin = Peakbin;
 end
 
 
