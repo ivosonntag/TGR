@@ -13,15 +13,15 @@ Inputpreset.show_average_section ='yes';
 Inputpreset.AP_slope_threshold = 12;
 Inputpreset.AP_spike_threshold = [12 5];
 Inputpreset.sAHPbaseEnd = 180*Inputpreset.Ms;
-Inputpreset.sAHPstart = 1200*Inputpreset.Ms;
-Inputpreset.sAHPend = 1600*Inputpreset.Ms;
-Inputpreset.IO_start = 201*Inputpreset.Ms;
-Inputpreset.IO_end = 1200*Inputpreset.Ms;
-Inputpreset.IOsteps = -100:50:600;
+Inputpreset.sAHPstart = 1500*Inputpreset.Ms;
+Inputpreset.sAHPend = 1800*Inputpreset.Ms;
+Inputpreset.IO_start = 501*Inputpreset.Ms;
+Inputpreset.IO_end = 1500*Inputpreset.Ms;
+Inputpreset.IOsteps = 50:50:600;
 Inputpreset.expName = 'defaultExperiment';
 Inputpreset.celltype = [];
 
-IO_spikeAdapt = cell(1,length(all_cells));
+IO_spikeAdapt = {};
 
 %%% start of Analysis
 for i = 1:size(all_cells,2)
@@ -85,14 +85,14 @@ for i = 1:size(all_cells,2)
     end
     lg = size(g(:,2),1);
     extrabins = floor(lg/2); % delay caused by filtering, in bins
-
+    
     %%% Loop through each data_Section that was found in the given file. The number of
     %%% data_Sections should correspond to the number of current
     %%% steps used
     if isempty(Inputparameter{i}.state)
         trials = 1:size(all_cells{i}.dS,2);
         dS = all_cells{i}.dS(:,trials);
-        timebases = all_cells{i}.timebases(:,trials);
+        timebases = all_cells{i}.timebases;
     else
         dS = all_cells{i}.dS(:,Inputparameter{i}.state{4});
         timebases = all_cells{i}.timebases(:,Inputparameter{i}.state{4});
@@ -113,7 +113,7 @@ for i = 1:size(all_cells,2)
         else
             akeStep(trial) = 0;
         end
-            %%% detect all APs
+        %%% detect all APs
         lbin = Inputparameter{i}.IO_end;
         ab = Inputparameter{i}.IO_start;
         count1=0;
@@ -132,7 +132,11 @@ for i = 1:size(all_cells,2)
                     AP_threshold{count1,trial} = dS(ab,trial);
                     APs{count1,trial} =  dS(ab-49:ab+200,trial);
                     time_AP_max_Vm(count1) = AP_max_Vm_time;
-                    time_AP_end_Vm(count1) = AP_end_Vm_time;
+                    if ~isempty(AP_end_Vm_time)
+                        time_AP_end_Vm(count1) = AP_end_Vm_time;
+                    else
+                        time_AP_end_Vm(count1) = nan;
+                    end
                 end
                 ab = AP_max_time+50;
             else
@@ -160,7 +164,7 @@ for i = 1:size(all_cells,2)
             mAHPVm{1,trial} = mean(dS(mAHPbin-10:mAHPbin+10,trial));
             mAHP{1,trial} = mAHPVm{1,trial} - AP_threshold{1,trial};
             ISI{trial} = NaN;
-            Ifqz{trial} = NaN;  
+            Ifqz{trial} = NaN;
             Mfqz(trial) = 1;
         elseif length(raster) > 1
             for k = 1 : length(raster)
@@ -169,7 +173,7 @@ for i = 1:size(all_cells,2)
                     mAHPVm{k,trial} = mean(dS(mAHPbin(k)-5:mAHPbin(k)+5,trial));
                     mAHP{k,trial} = mAHPVm{k,trial} - AP_threshold{k,trial};
                 elseif find(dS(time_AP_max(k):Inputparameter{i}.IO_end,trial) == min(dS(time_AP_max(k):Inputparameter{i}.IO_end,trial)),1) + time_AP_max(k)-1 < Inputparameter{i}.IO_end-5
-                    mAHPbin(k) = find(dS(time_AP_max(k):Inputparameter{i}.IO_end,trial) == min(dS(time_AP_max(k):Inputparameter{i}.IO_end,trial)),1) + time_AP_max(k)-1; 
+                    mAHPbin(k) = find(dS(time_AP_max(k):Inputparameter{i}.IO_end,trial) == min(dS(time_AP_max(k):Inputparameter{i}.IO_end,trial)),1) + time_AP_max(k)-1;
                     mAHPVm{k,trial} = mean(dS(mAHPbin(k)-5:mAHPbin(k)+5,trial));
                     mAHP{k,trial} = mAHPVm{k,trial} - AP_threshold{k,trial};
                 else
@@ -204,13 +208,15 @@ for i = 1:size(all_cells,2)
             plot(timebases,dS(:,trial),'b'); hold on
             plot(timebases,Slope,'g'); hold on
             plot(sAHPbin/Inputparameter{1}.Fs,sAHPVm,'c.','MarkerSize',20); hold on
-            if ~isnan(mAHPbin(1))
-                plot(time_AP_max/Inputparameter{i}.Fs, Inputparameter{i}.AP_spike_threshold(1)*ones(1,length(time_AP_max)), 'r.','MarkerSize',10); hold on
-                plot([mAHPbin/Inputparameter{i}.Fs],[mAHPVm{1:length(mAHPbin),trial}],'g.','MarkerSize',10); hold on
+            try
+                if ~isnan(mAHPbin(1))
+                    plot(time_AP_max/Inputparameter{i}.Fs, Inputparameter{i}.AP_spike_threshold(1)*ones(1,length(time_AP_max)), 'r.','MarkerSize',10); hold on
+                    plot([mAHPbin/Inputparameter{i}.Fs],[mAHPVm{1:length(mAHPbin),trial}],'g.','MarkerSize',10); hold on
+                end
             end
-            set(gca,'xLim',[0.1 1.4],'ylim',[-100 50]);
+            set(gca,'xLim',[0.1 2],'ylim',[-100 50]);
             hold off
-            title(['Datasection ' int2str(trial) ' channel: ' int2str(all_cells{i}.cfs_info.chVec)]);
+            title(['Datasection ' int2str(trial) ' channel: ' ]);
         end
         % % Compute Slope of Spike adaptation and generate plot
         %akeman=IOsteps(trial)/Cm(i);
@@ -218,7 +224,7 @@ for i = 1:size(all_cells,2)
             clear Nisi Linear stats
             ISInr{trial} = 1:1:length(ISI{trial});
             Linear=ISInr{trial}(3:end);
-            Nisi=nISI{trial}(3:end);            
+            Nisi=nISI{trial}(3:end);
             if sum(nISI{trial} > 5) >= 1 % SDnISI{trial} < 2
                 if strcmp(Inputparameter{i}.celltype,'CTh') || strcmp(Inputparameter{i}.celltype,'CSp') % ~Inputparameter{i}.celltype == 'CTh' || ~Inputparameter{i}.celltype == 'CSp'
                     IOslope(trial) = NaN;
@@ -249,7 +255,7 @@ for i = 1:size(all_cells,2)
                 title(['Spike adaptation for trial ' int2str(trial) ', Akeman = ' num2str(akeStep(trial))]);
                 hold off
             end
-%             pause(4)
+            %             pause(4)
         else
             IOslope(trial) = NaN;
             MIfqz(trial) = NaN;
