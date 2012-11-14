@@ -39,8 +39,8 @@ for i = 1:max(length(all_cells))
     %    fAHP = NaN;
     %    ADP = NaN;
     %end
-    figure(4)
     if strcmp(show_single_epis,'yes')
+        figure(4)
         %             try
         h = figure(2);
         set(h,'color','w');
