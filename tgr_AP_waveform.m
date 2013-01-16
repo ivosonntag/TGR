@@ -5,6 +5,7 @@ if nargin<3
 end
 
 AP_waveform = cell(1,length(all_cells));
+APhalf_time = NaN;
 
 for i = 1:max(length(all_cells))
     %if all_cells{i}.name == Inputparameter{i}.expName

@@ -158,7 +158,9 @@ for i = 1:size(all_cells,2)
                     AP_threshold{count1,trial} = dS(ab,trial);
                     APs{count1,trial} =  dS(ab-49:ab+200,trial);
                     time_AP_max_Vm(count1) = AP_max_Vm_time;
-                    time_AP_end_Vm(count1) = AP_end_Vm_time;
+                    try
+                        time_AP_end_Vm(count1) = AP_end_Vm_time;
+                    end
                 end
                 ab = AP_max_time+50;
             else
@@ -234,7 +236,7 @@ for i = 1:size(all_cells,2)
                 plot(time_AP_max/Inputparameter{i}.Fs, Inputparameter{i}.AP_spike_threshold(1)*ones(1,length(time_AP_max)), 'r.','MarkerSize',10); hold on
                 plot([mAHPbin/Inputparameter{i}.Fs],[mAHPVm{1:length(mAHPbin),trial}],'g.','MarkerSize',10); hold on
             end
-            set(gca,'xLim',[0.1 1.4],'ylim',[-100 50]);
+            set(gca,'ylim',[-100 50]); %'xLim',[0.1 1.4],
             hold off
             title(['Datasection ' int2str(trial) ' channel: ' int2str(all_cells{i}.cfs_info.chVec)]);
         end
@@ -300,8 +302,8 @@ for i = 1:size(all_cells,2)
         IO_spikeAdapt{i}.raster{trial} = raster;
     end
     IO_spikeAdapt{i}.sAHPmax = min(sAHP);
-    IO_spikeAdapt{i}.dS = dS;
-    IO_spikeAdapt{i}.timebases = timebases;
+    %IO_spikeAdapt{i}.dS = dS;
+    %IO_spikeAdapt{i}.timebases = timebases;
     IO_spikeAdapt{i}.AP_threshold = AP_threshold;
     IO_spikeAdapt{i}.mAHPVm = mAHPVm;
     IO_spikeAdapt{i}.mAHP = mAHP;
@@ -310,14 +312,24 @@ for i = 1:size(all_cells,2)
     IO_spikeAdapt{i}.Mfqz = Mfqz;
     IO_spikeAdapt{i}.nISI = nISI;
     IO_spikeAdapt{i}.SDnISI = SDnISI;
-    IO_spikeAdapt{i}.ISInr = ISInr;
+    try
+        IO_spikeAdapt{i}.ISInr = ISInr;
+    catch
+        IO_spikeAdapt{i}.ISInr = NaN;
+    end
     IO_spikeAdapt{i}.ISIfreq = ISIfreq;
     IO_spikeAdapt{i}.IOsteps = IOsteps;
     IO_spikeAdapt{i}.akeStep = akeStep;
     IO_spikeAdapt{i}.IOslope = IOslope;
     IO_spikeAdapt{i}.MIfqz = MIfqz;
-    IO_spikeAdapt{i}.IOfit = IOfit;
+    try
+        IO_spikeAdapt{i}.IOfit = IOfit;
+    catch
+        IO_spikeAdapt{i}.IOfit = NaN;
+    end
+    try
     IO_spikeAdapt{i}.APs = APs;
+    end
     clear dS timebases ISI Ifqz Mfqz MIfqz nISI SDnISI ISInr ISIfreq z IOslope IOfit akeStep sAHP sAHPVm APs mAHP mAHPVm akeStep AP_threshold
 end
 

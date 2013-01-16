@@ -91,17 +91,21 @@ for i = 1:max(length(all_cells))
                 %pause(0.2)
             end
         end
-        stats = regstats(Vpeak(Inputparameter{i}.Ri_steps),Inputparameter{i}.IVsteps(Inputparameter{i}.Ri_steps),'linear',{'yhat' 'beta' 'rsquare' 'fstat'});
-        IVfit = stats.yhat;
-        IVslope = stats.beta(2);
-        IVx0 = stats.beta(1);
-        IVr2 = stats.rsquare;
-        IVp = stats.fstat.pval;
+        try
+            stats = regstats(Vpeak(Inputparameter{i}.Ri_steps),Inputparameter{i}.IVsteps(Inputparameter{i}.Ri_steps),'linear',{'yhat' 'beta' 'rsquare' 'fstat'});
+            IVfit = stats.yhat;
+            IVslope = stats.beta(2);
+            IVx0 = stats.beta(1);
+            IVr2 = stats.rsquare;
+            IVp = stats.fstat.pval;
+        end
         if strcmp(show_average_section,'yes')
             f = figure(5);
             set(f,'color','w');
             plot(Inputparameter{i}.IVsteps,Vpeak, 'k.'); hold on
-            plot(Inputparameter{i}.IVsteps(Inputparameter{i}.Ri_steps),IVfit, 'r'); hold off
+            try
+                plot(Inputparameter{i}.IVsteps(Inputparameter{i}.Ri_steps),IVfit, 'r'); hold off
+            end
             %set(gca,'xLim',[-200 100],'ylim',[-60 40]);
             ylabel('Peak potential (mV)');
             xlabel('Step current (pA)');

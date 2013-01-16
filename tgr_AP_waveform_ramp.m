@@ -55,7 +55,7 @@ for i = 1:max(length(all_cells))
         AP_amplitude = AP_peakVm - AP_threshold;
         APhalfAmp = AP_amplitude / 2 + AP_threshold;
         APhalfBin1 = find(dS(APthreshBin:APthreshBin+100) > APhalfAmp, 1 ) + APthreshBin-1;
-        APhalfBin2 = find(dS(APhalfBin1:APhalfBin1+60) < APhalfAmp, 1 ) + APhalfBin1-1;
+        APhalfBin2 = find(dS(APhalfBin1:APhalfBin1+100) < APhalfAmp, 1 ) + APhalfBin1-1;
         APhalf_time = (APhalfBin2-APhalfBin1) / Inputparameter{i}.Ms;
         max_ADP_bin = APthreshBin + 25 * Inputparameter{i}.Ms;
         max_fAHP_bin = APthreshBin + floor(APhalf_time * 6.6 * Inputparameter{i}.Ms);
@@ -79,9 +79,11 @@ for i = 1:max(length(all_cells))
             if ~isnan(fAHP)
                 plot(fAHPbin/Inputparameter{i}.Fs,fAhpVm,'r.','MarkerSize',20); hold on
             end
-            plot(mAHPbin/Inputparameter{i}.Fs,mAHPVm,'b.','MarkerSize',20); hold on
+            try
+                plot(mAHPbin/Inputparameter{i}.Fs,mAHPVm,'b.','MarkerSize',20); hold on
             set(gca,'XLim',[APthreshBin/Inputparameter{i}.Fs-0.01 APthreshBin/Inputparameter{i}.Fs+0.1]);
             set(gca,'YLim',[mAHPVm-5 AP_peakVm+5]);
+            end
             title(['AP waveform for ' Inputparameter{i}.expName ', episode: ' int2str(trial)]);
 %             pause(0.2)
 %             catch
@@ -89,7 +91,7 @@ for i = 1:max(length(all_cells))
 %             end
         end
         AP_waveform{i}.expName = Inputparameter{i}.expName;
-        AP_waveform{i}.AP = dS(APthreshBin-100:APthreshBin+1000);
+        AP_waveform{i}.AP = dS(APthreshBin-200:APthreshBin+2000);
         slope_AP = diff(AP_waveform{i}.AP);
         AP_waveform{i}.APmaxSlopes = [max(slope_AP) min(slope_AP)] .* 20; 
         AP_waveform{i}.AP_peakVM = AP_peakVm;
@@ -100,7 +102,6 @@ for i = 1:max(length(all_cells))
         AP_waveform{i}.mAHP = mAHPVm - AP_threshold;
         AP_waveform{i}.APamp_peak_ahp = APamp_peak_ahp;
         AP_waveform{i}.AP_threshold = AP_threshold;
-        AP_waveform{i}.AP = dS(APthreshBin-50:APthreshBin+200);
         hold off
     %end
 end
